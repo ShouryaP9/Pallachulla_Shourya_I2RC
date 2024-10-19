@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -20,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 
+
 public class Drivetrain extends SubsystemBase {
   private final WPI_TalonSRX leftDriveTalon;
   private final WPI_TalonSRX rightDriveTalon;
@@ -27,8 +27,8 @@ public class Drivetrain extends SubsystemBase {
 
  
   public Drivetrain() {
-    leftDriveTalon = new WPI_TalonSRX(Constants.DrivetrainConstants.leftDriveTalonPort);
-    rightDriveTalon = new WPI_TalonSRX(Constants.DrivetrainConstants.leftDriveTalonPort);
+    leftDriveTalon = new WPI_TalonSRX(Constants.DriveTrainConstants.leftDriveTalonConstants);
+    rightDriveTalon = new WPI_TalonSRX(Constants.DriveTrainConstants.rightDriveTalonConstants);
     leftDriveTalon.setNeutralMode(NeutralMode.Coast);
     rightDriveTalon.setNeutralMode(NeutralMode.Coast);
     rightDriveTalon.setInverted(true);
@@ -47,7 +47,7 @@ public class Drivetrain extends SubsystemBase {
  }
 
  public double GetCurrentAngle() {
-  double currentAngle = navx.getAngle();
+  double currentAngle = -navx.getAngle();
   return currentAngle;
  }
 

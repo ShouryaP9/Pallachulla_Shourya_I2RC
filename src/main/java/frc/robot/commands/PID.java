@@ -10,14 +10,13 @@ import frc.robot.subsystems.Drivetrain;
 
 public class PID extends Command {
   public Drivetrain drive;
-  public double setPointAngle = 90;
-  public PIDController controller = new PIDController(1, 0, 0);
+  public double setPointAngle = 0;
+  public PIDController controller = new PIDController(0.7/90, 0, 0);
   /** Creates a new PID. */
-  public PID(Drivetrain dr, double wantedAngle, PIDController pidcontroller) {
+  public PID(Drivetrain dr, double wantedAngle) {
     // Use addRequirements() here to declare subsystem dependencies.
     drive = dr;
     setPointAngle = wantedAngle;
-    controller = pidcontroller;
     addRequirements(dr);
     controller.setTolerance(5);
 
@@ -36,10 +35,9 @@ public class PID extends Command {
   }
 
   // Called every time the scheduler runs while the command is scheduled.
-  @Override
   public void execute() {
     double output = controller.calculate(chassisAngle(), setPointAngle);
-    drive.TankDrive(output * -1, output * -1);
+    drive.TankDrive(-output, output);
   }
 
   // Called once the command ends or is interrupted.
