@@ -4,55 +4,52 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Drivetrain;
 
-/** An example command that uses an example subsystem. */
-public class EncoderDrive extends Command {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private Drivetrain drive = new Drivetrain();
-  double setPoint = 1;
-
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public EncoderDrive(Drivetrain dr, double setpoint) {
-    drive = dr;
-    setPoint = setpoint;
+public class PID extends Command {
+  public Drivetrain drive;
+  public double setPointAngle = 0;
+  public PIDController controller = new PIDController(0.7/90, 0, 0);
+  /** Creates a new PID. */
+  public PID(Drivetrain dr, double wantedAngle) {
     // Use addRequirements() here to declare subsystem dependencies.
+    drive = dr;
+    setPointAngle = wantedAngle;
     addRequirements(dr);
+    controller.setTolerance(5);
+
+  }
+
+  public double chassisAngle() {
+    double currentAngle = drive.GetCurrentAngle();
+    return currentAngle;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    drive.resetEncoders();
-    drive.TankDrive(0,0);
+    drive.resetGyro();
+    drive.TankDrive(0, 0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
-  @Override
   public void execute() {
-    drive.TankDrive(0.3, 0.3);
+    double output = controller.calculate(chassisAngle(), setPointAngle);
+    drive.TankDrive(-output, output);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     drive.TankDrive(0, 0);
+
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    double metersTraveled = drive.getMeters();
-    if (metersTraveled < setPoint) {
-      return false;
-    }
-    else {
-      return true;
-    }
+    return controller.atSetpoint();
   }
 }

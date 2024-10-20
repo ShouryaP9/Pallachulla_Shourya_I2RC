@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -27,8 +26,8 @@ public class Drivetrain extends SubsystemBase {
 
  
   public Drivetrain() {
-    leftDriveTalon = new WPI_TalonSRX(Constants.DrivetrainPorts.leftDriveTalonPort);
-    rightDriveTalon = new WPI_TalonSRX(Constants.DrivetrainPorts.leftDriveTalonPort);
+    leftDriveTalon = new WPI_TalonSRX(Constants.DriveTrainConstants.leftDriveTalonConstants);
+    rightDriveTalon = new WPI_TalonSRX(Constants.DriveTrainConstants.rightDriveTalonConstants);
     leftDriveTalon.setNeutralMode(NeutralMode.Coast);
     rightDriveTalon.setNeutralMode(NeutralMode.Coast);
     rightDriveTalon.setInverted(true);
@@ -47,7 +46,7 @@ public class Drivetrain extends SubsystemBase {
  }
 
  public double GetCurrentAngle() {
-  double currentAngle = navx.getAngle();
+  double currentAngle = -navx.getAngle();
   return currentAngle;
  }
 
@@ -55,28 +54,30 @@ public class Drivetrain extends SubsystemBase {
   navx.reset();
  }
 
- public void getTicks() {
-  private int leftPosition = leftDriveTalon.getSelectedSensorPosition(0);
-  private int rightPosition = rightDriveTalon.getSelectedSensorPosition(0);
-  private int avgPosition = (leftPosition + rightPosition)/2;
+ public double getTicks() {
+  double leftPosition = leftDriveTalon.getSelectedSensorPosition(0);
+  double rightPosition = rightDriveTalon.getSelectedSensorPosition(0);
+  double avgPosition = (leftPosition + rightPosition)/2;
+  return avgPosition;
 }
 
-public void getMeters() {
-  private int metersPerTick = (0.1524 * 3.1415926535)/4096;
-  private int positionInMeters = avgPosition * metersPerTick;
+public double getMeters() {
+  double metersPerTick = (0.1524 * 3.1415926535)/4096;
+  double positionInMeters = getTicks() * metersPerTick;
+  return positionInMeters;
 }
 
 public void resetEncoders() {
-  leftDriveTalon.getSelectedSensorPosition(0,0,10);
-  rightDriveTalon.getSelectedSensorPosition(0,0,10);
+  leftDriveTalon.getSelectedSensorPosition();
+  rightDriveTalon.getSelectedSensorPosition();
 }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber(key:"Left Voltage", leftDriveTalon.getMotorOutputPercent());
-    SmartDashboard.putNumber(key:"Right Voltage", rightDriveTalon.getMotorOutputPercent());
-    SmartDashboard.putNumber(key: "Angle", navx.getAngle());
+    SmartDashboard.putNumber("Left Voltage", leftDriveTalon.getMotorOutputPercent());
+    SmartDashboard.putNumber("Right Voltage", rightDriveTalon.getMotorOutputPercent());
+    SmartDashboard.putNumber("Angle", navx.getAngle());
   }
 
   @Override
