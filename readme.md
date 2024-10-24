@@ -10,7 +10,7 @@ Week: 4
 
 The main topic this week was: Sequential Commands
 
-Commands: **[PID.Java]**, **[EncoderDrive.Java]**
+Commands: **[PID.Java]**, **[EncoderDrive.Java]**,  **[SequentialCommandGroups.Java]**
 
 
 Subsystems: **[Drivetrain]**
