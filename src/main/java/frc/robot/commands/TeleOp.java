@@ -6,20 +6,33 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Drivetrain;
 
 public class TeleOp extends Command {
+
+  Joystick js = new Joystick(2);
+  Drivetrain dr = new Drivetrain();
+
   public TeleOp() {
-    Joystick joystick = new Joystick(2);
+
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    dr.TankDrive(0,0);
+  }
+
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    final double leftPowerRaw = js.getRawAxis(1);
+    final double rightPowerRaw = js.getRawAxis(5);
+    dr.TankDrive(leftPowerRaw, rightPowerRaw);
+    shuffleboard.output(leftSpeed, rightSpeed);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
