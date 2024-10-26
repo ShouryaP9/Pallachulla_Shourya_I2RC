@@ -4,17 +4,21 @@
 
 package frc.robot.commands;
 
+import javax.swing.text.html.parser.DTD;
+
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 
 public class TeleOp extends Command {
 
   Joystick js = new Joystick(2);
-  Drivetrain dr = new Drivetrain();
-
-  public TeleOp() {
-
+  Drivetrain dr;
+  public TeleOp(Drivetrain drivetrain) {
+    dr = drivetrain;
+    addRequirements(dr);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -31,7 +35,9 @@ public class TeleOp extends Command {
     final double leftPowerRaw = js.getRawAxis(1);
     final double rightPowerRaw = js.getRawAxis(5);
     dr.TankDrive(leftPowerRaw, rightPowerRaw);
-    shuffleboard.output(leftSpeed, rightSpeed);
+    SmartDashboard.putNumber("leftSpeed", leftPowerRaw);
+    SmartDashboard.putNumber("rightSpeed", rightPowerRaw);
+
   }
 
   // Called once the command ends or is interrupted.
